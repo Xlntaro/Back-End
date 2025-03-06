@@ -1,51 +1,46 @@
 <?php
-// Завдання 1: Робота з файлами (коментарі)
-$filename = "comments.txt";
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? '');
-    $comment = trim($_POST['comment'] ?? '');
+function sortWordsAlphabetically($inputFile, $outputFile) {
+    // Read words from input file
+    $content = file_get_contents($inputFile);
+    $words = array_filter(explode(' ', $content));
     
-    if (!empty($name) && !empty($comment)) {
-        $entry = "$name|$comment" . PHP_EOL;
-        file_put_contents($filename, $entry, FILE_APPEND | LOCK_EX);
-        header("Location: " . $_SERVER['PHP_SELF']); // Оновлення сторінки для відображення нового коментаря
-        exit();
-    }
+    // Sort words alphabetically
+    sort($words);
+    
+    // Write sorted words to output file
+    file_put_contents($outputFile, implode(' ', $words));
+    
+    return $words;
 }
 
-$comments = file_exists($filename) ? file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) : [];
+// Process form submission
+$sortedWords = [];
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $inputFile = $_POST['input_file'] ?? '';
+    $outputFile = $_POST['output_file'] ?? 'sorted_words.txt';
+    
+    if (!empty($inputFile) && file_exists($inputFile)) {
+        $sortedWords = sortWordsAlphabetically($inputFile, $outputFile);
+    }
+}
 ?>
 
 <!DOCTYPE html>
-<html lang="uk">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Коментарі</title>
+    <title>Word Sorting</title>
 </head>
 <body>
-    <h2>Додати коментар</h2>
-    <form method="post">
-        <label>Ім'я: <input type="text" name="name" required></label><br>
-        <label>Коментар: <textarea name="comment" required></textarea></label><br>
-        <button type="submit">Надіслати</button>
+    <h2>Alphabetical Word Sorting</h2>
+    <form method="POST">
+        <label>Input File: <input type="text" name="input_file" required></label><br>
+        <label>Output File (optional): <input type="text" name="output_file" value="sorted_words.txt"></label><br>
+        <input type="submit" value="Sort Words">
     </form>
-    
-    <h2>Список коментарів</h2>
-    <?php if (!empty($comments)): ?>
-        <table border="1">
-            <tr><th>Ім'я</th><th>Коментар</th></tr>
-            <?php foreach ($comments as $line): ?>
-                <?php 
-                $parts = explode('|', $line, 2);
-                if (count($parts) === 2):
-                    list($name, $comment) = $parts;
-                ?>
-                <tr><td><?= htmlspecialchars($name) ?></td><td><?= htmlspecialchars($comment) ?></td></tr>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </table>
-    <?php else: ?>
-        <p>Коментарів поки немає.</p>
+
+    <?php if (!empty($sortedWords)): ?>
+        <h3>Sorted Words:</h3>
+        <p><?= implode(', ', $sortedWords) ?></p>
     <?php endif; ?>
 </body>
 </html>
