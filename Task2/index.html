@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Додаток для заміток</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Додаток для заміток</h1>
+
+    <!-- Форма для додавання замітки -->
+    <div class="panel">
+        <h2>Додати нову замітку</h2>
+        <div id="createMessage" class="success-message"></div>
+        <div id="createError" class="error-message"></div>
+        <form id="createForm">
+            <label for="title">Заголовок:</label>
+            <input type="text" id="title" name="title" required>
+            
+            <label for="content">Текст:</label>
+            <textarea id="content" name="content" required></textarea>
+            
+            <button type="submit">Додати замітку</button>
+        </form>
+    </div>
+
+    <!-- Список заміток -->
+    <div class="panel">
+        <h2>Список заміток</h2>
+        <div id="notesList"></div>
+    </div>
+
+    <!-- Форма редагування (прихована за замовчуванням) -->
+    <div class="panel edit-form" id="editPanel">
+        <h2>Редагувати замітку</h2>
+        <div id="editMessage" class="success-message"></div>
+        <div id="editError" class="error-message"></div>
+        <form id="editForm">
+            <input type="hidden" id="editId" name="editId">
+            
+            <label for="editTitle">Заголовок:</label>
+            <input type="text" id="editTitle" name="editTitle" required>
+            
+            <label for="editContent">Текст:</label>
+            <textarea id="editContent" name="editContent" required></textarea>
+            
+            <button type="submit">Зберегти зміни</button>
+            <button type="button" id="cancelEdit">Скасувати</button>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
